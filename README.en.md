@@ -9,11 +9,18 @@
 
 ## Screenshots
 
+![Codex sidebar placement: the card sits at the bottom of the left sidebar, directly above the account menu](assets/screenshots/sidebar-context.jpg)
+
+The card sits **at the bottom of the Codex sidebar, directly above the account menu**. This design preview uses demo accounts, projects, usage, responses, and reset announcements. The app interface is currently in Chinese.
+
+<details>
+<summary>View card details</summary>
+
 | At a glance | Model settings |
 | :---: | :---: |
 | <img src="assets/screenshots/overview.jpg" width="267" alt="Weekly and five-hour usage remaining, a Tibo reset announcement, and a model check result"> | <img src="assets/screenshots/settings.jpg" width="267" alt="Expanded card with model and reasoning effort selectors"> |
 
-Captured from the real card's interactive preview using demo account, usage, response, and reset data. The app interface is currently in Chinese.
+</details>
 
 - **Track usage**: Remaining weekly and five-hour allowances, reset countdowns, and exact reset times in Beijing time.
 - **Follow resets**: Tibo's extra reset announcements, confirmations, and sources from AIHOT. Viewing a notice does not trigger a reset.

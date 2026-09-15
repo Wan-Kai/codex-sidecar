@@ -9,11 +9,18 @@
 
 ## 产品截图
 
+![Codex 侧栏位置示意：卡片位于左侧导航底部、账号菜单上方](assets/screenshots/sidebar-context.jpg)
+
+卡片位于 **Codex 侧栏底部、账号菜单上方**。上图为设计预览，账号、项目、额度、模型回答和重置预告均使用演示数据。
+
+<details>
+<summary>查看卡片细节</summary>
+
 | 日常查看 | 展开设置 |
 | :---: | :---: |
 | <img src="assets/screenshots/overview.jpg" width="267" alt="剩余周额度、5 小时额度、Tibo 重置预告与检测结果"> | <img src="assets/screenshots/settings.jpg" width="267" alt="展开卡片，选择模型与推理强度"> |
 
-截图取自正式卡片的交互预览；账号、额度、模型回答和重置预告均为演示数据。
+</details>
 
 - **看额度**：周额度与 5 小时额度的剩余比例、重置倒计时和准确北京时间。
 - **看重置**：展示 AIHOT 提供的 Tibo 额外重置预告、确认状态和来源；仅展示，不执行重置。
