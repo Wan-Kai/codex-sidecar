@@ -1,0 +1,30 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax
+        run: |
+          for file in *.mjs *.cjs card.js; do node --check "$file"; done
+          zsh -n Start.command Stop.command
+      - name: Build local launcher without desktop shortcut
+        run: npm run build:check
+      - name: Run tests
+        run: npm test
+      - name: Verify application icon
+        run: npm run test:launcher

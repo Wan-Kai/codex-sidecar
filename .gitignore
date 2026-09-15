@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+*.app
+launcher.applescript
+assets/*.iconset/
+work/
+actual-*.json
+*.log
+.env
+.env.*
+coverage/

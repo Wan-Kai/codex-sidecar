@@ -1,0 +1,97 @@
+<!-- 实现验收：正式卡片与模拟桥，Tibo 样例不发送真实请求。 -->
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CodeX 注入版 · 功能验收</title><style>
+*{box-sizing:border-box}body{margin:0;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#30312e;background:#f3f3f0}main{display:grid;grid-template-columns:280px minmax(0,1fr);height:min(780px,calc(100vh - 64px));min-height:420px;max-width:1150px;margin:32px auto;background:white;border:1px solid #deded8;border-radius:16px;overflow:hidden}aside{position:relative;background:#fafaf8;border-right:1px solid #e5e5e0;min-height:0}.sidebar-navigation{height:100%;position:relative;overflow:hidden}.scroll{height:calc(100% - var(--sidebar-footer-height,48px));overflow:auto;padding:20px 16px;color:#777872}.scroll b{display:block;color:#30312e;margin-bottom:24px}.scroll p{padding:4px 2px}.project{margin:26px 0 8px;color:#4b4c47}.contents{display:contents}.absolute{position:absolute}.inset-x-0{left:0;right:0}.bottom-0{bottom:0;background:#fafaf8}.h-toolbar{height:48px;border-top:1px solid #e7e7e2;display:flex;align-items:center;padding:0 14px}.sidebar-item{border:0;font:inherit;background:none;display:flex;gap:10px;align-items:center}.avatar{display:grid;place-items:center;width:25px;height:25px;background:#ef5542;color:white;border-radius:50%;font-size:10px}.content{padding:40px;min-width:0;overflow:auto}.eyebrow{font-size:11px;letter-spacing:2px;color:#93968d}h1{font-size:26px;font-weight:550;letter-spacing:-.5px;margin:8px 0 10px}p{color:#73766d;max-width:620px}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:24px 0}select,button{font:inherit;padding:6px 8px;border:1px solid #deded8;border-radius:6px;background:white;color:#50544a}ol{padding-left:20px;color:#62665e}li{margin:9px 0}.log{background:#f7f7f4;padding:12px;border:1px solid #e8e8e2;border-radius:8px;font:11px/1.8 ui-monospace,monospace;max-height:220px;overflow:auto;overflow-wrap:anywhere}.pill{font-size:11px;display:inline-block;background:#eaf2eb;color:#417451;padding:3px 8px;border-radius:5px}.note{font-size:12px}a{color:#505d46}@media(max-width:700px){main{margin:0;border-radius:0;grid-template-columns:270px minmax(0,1fr);height:100vh;min-height:0}.content{padding:22px}}@media(prefers-color-scheme:dark){body{background:#191919;color:#deded9}main{background:#202020;border-color:#444}aside,.bottom-0{background:#252525;border-color:#444}.scroll b,.project{color:#ddd}.h-toolbar{border-color:#444}.log{background:#282828;border-color:#444}select,button{background:#282828;border-color:#444;color:#ddd}.pill{background:#244535;color:#a1c8ac}}
+</style></head><body><main><aside><div class="sidebar-navigation"><div class="contents"><nav class="scroll" data-app-action-sidebar-scroll><b>◉ Codex</b><p>＋ 新任务</p><p>⌕ 搜索</p><p>◇ 自动化</p><div class="project">▱ demo-project</div><p>　搭建项目首页</p><p>　阅读项目说明</p><p>　主流程</p><div class="project">▱ my-workspace</div><p>　整理本周任务</p><div class="project">▱ sample-app</div><p>　整理请求生命周期</p><p>　回归检查</p><p>　部署记录</p></nav><div class="absolute inset-x-0 bottom-0"><div class="h-toolbar"><button class="sidebar-item" aria-label="Open profile menu"><span class="avatar">DU</span>Demo User</button></div></div></div></div></aside><section class="content"><div class="eyebrow">CODEX · SIDEBAR</div><h1>额度、重置消息与模型检测。</h1><p>Codex Sidecar 把常用信息收进账号上方的一张卡片。这里使用模拟数据，你可以直接体验展开、检测与失败重试。</p><span class="pill">1.1.13 · 模拟数据</span>
+<div class="reset-demo" aria-label="Tibo 重置状态预览"><div class="demo-caption">切换状态</div><div class="reset-states"><button type="button" data-reset-state="none" aria-pressed="true">暂无预告</button><button type="button" data-reset-state="announced" aria-pressed="false">已预告</button><button type="button" data-reset-state="confirmed" aria-pressed="false">已确认</button><button type="button" data-reset-state="error" aria-pressed="false">读取失败</button></div><p id="reset-demo-note">默认展示「暂无新预告」。展开后可查看最近一次确认记录和数据核验时间。</p></div>
+<details class="demo-tools"><summary>额度与检测交互</summary><div class="controls"><label>模拟响应 <select id="scenario"><option value="normal">正常 · 自然语言 3.0</option><option value="major">正常 · 仅回答 3.</option><option value="abnormal">异常 · 用户原文 2.5</option><option value="unknown">无法判定 · 多个候选</option><option value="tools">调用工具</option><option value="failure">请求失败</option><option value="archive">归档失败一次</option></select></label><label>额度响应 <select id="quota-scenario"><option value="weekly">周额度 · 剩余 64%</option><option value="both">周额度与 5 小时额度</option><option value="low">低额度 · 剩余 8%</option><option value="error">额度读取失败</option><option value="empty">无 Codex 额度</option></select></label><button id="switch-account">模拟切换账号</button></div><p class="note">检测、恢复和额度刷新均为本页模拟交互。</p><p class="note">模拟恢复返回的整数仅用于验证格式；它不是一次真实的恢复请求。</p><div class="log" id="log" aria-label="请求日志">等待操作…</div></details><p class="design-note">个人额度按账号周期刷新；Tibo 重置展示公开的额外重置消息。</p><p class="design-note">数据源未提供置信度，因此不展示百分比。预告和确认分别用文字标明。</p></section></main><script src="core.cjs"></script><script src="tibo.cjs"></script><script>
+  const tasks = JSON.parse(sessionStorage.getItem('codex-iq.preview.tasks') || '{}');
+  const log = document.getElementById('log');
+  let archiveFailed = false, alternateAccount = false;
+  const models = [
+    // 模拟底层完整目录；正式卡片负责把 GPT-6 的常规菜单限制为五档。
+    { id: 'gpt-6-astra', model: 'gpt-6-astra', displayName: 'GPT-6-Astra', defaultReasoningEffort: 'medium', isDefault: true, hidden: false, supportedReasoningEfforts: ['low', 'medium', 'high', 'xhigh', 'max', 'ultra'].map(reasoningEffort => ({ reasoningEffort })) },
+    { id: 'gpt-5.6-sol', model: 'gpt-5.6-sol', displayName: 'GPT-5.6 Sol', defaultReasoningEffort: 'medium', hidden: false, supportedReasoningEfforts: ['low', 'medium', 'high'].map(reasoningEffort => ({ reasoningEffort })) }
+  ];
+  /** 模拟与生产相同的原生桥信封，展示调用顺序及故障收尾。 */
+  window.electronBridge = { async sendMessageFromView(data) {
+    const { id, method, params } = data.request;
+    let result, error;
+    const scenario = document.getElementById('scenario').value;
+    const row = document.createElement('div'); row.textContent = `${method}${params.model ? ' · ' + params.model : ''}${params.effort ? ' · ' + params.effort : ''}`;
+    if (log.textContent === '等待操作…') log.textContent = '';
+    log.append(row); log.scrollTop = log.scrollHeight;
+    switch (method) {
+      case 'model/list': result = { data: models }; break;
+      case 'account/rateLimits/read': {
+        const quota = document.getElementById('quota-scenario').value;
+        if (quota === 'error') { error = { message: '模拟额度读取失败' }; break; }
+        const primary = { usedPercent: quota === 'low' ? 92 : alternateAccount ? 82 : 36, windowDurationMins: 10080, resetsAt: Math.floor(Date.now() / 1000) + 3 * 86400 };
+        const bucket = { limitId: 'codex', primary, secondary: quota === 'both' ? { usedPercent: 20, windowDurationMins: 300, resetsAt: Math.floor(Date.now() / 1000) + 7200 } : null };
+        result = { rateLimits: bucket, rateLimitsByLimitId: quota === 'empty' ? {} : { codex: bucket } }; break;
+      }
+      case 'thread/start': {
+        const threadId = 'preview-' + crypto.randomUUID(); tasks[threadId] = { id: threadId, turns: [], model: params.model }; result = { thread: tasks[threadId], model: params.model }; break;
+      }
+      case 'thread/name/set': result = {}; break;
+      case 'turn/start': {
+        const task = tasks[params.threadId];
+        const recover = params.input[0].text === CodexIQCore.RECOVER_PROMPT;
+        let text = recover ? Array(323).fill('155').join(', ') : scenario === 'major' ? '3. ' : scenario === 'abnormal' ? '按我已有知识，Gemini 最新可确认的是 **Gemini 2.5 系列**，包括 2.5 Pro 和 2.5 Flash。但我无法确认截至 2026 年 9 月是否已有更新版本；按你的要求，我没有调用外部工具。' : scenario === 'unknown' ? '最新是 Gemini 2.5 或 Gemini 3.1，我无法确定。' : '按我已有知识，Gemini 的最新版本是 Gemini 3.0。';
+        const turn = { id: crypto.randomUUID(), status: 'inProgress', items: [{ type: 'agentMessage', id: 'answer', phase: 'final_answer', text }] };
+        if (scenario === 'tools') turn.items.push({ type: 'webSearch', id: 'search' });
+        task.turns = [turn]; task.scenario = scenario;
+        setTimeout(() => { turn.status = scenario === 'failure' ? 'failed' : 'completed'; if (scenario === 'failure') turn.error = { message: '模拟额度不足' }; sessionStorage.setItem('codex-iq.preview.tasks', JSON.stringify(tasks)); }, 700);
+        result = { turn }; break;
+      }
+      case 'thread/read': result = { thread: tasks[params.threadId] }; break;
+      case 'thread/archive':
+        if (tasks[params.threadId].scenario === 'archive' && !archiveFailed) { archiveFailed = true; error = { message: '模拟归档失败，请重试' }; }
+        else { tasks[params.threadId].archived = true; result = {}; }
+        break;
+      default: error = { message: '不支持的模拟方法 ' + method };
+    }
+    sessionStorage.setItem('codex-iq.preview.tasks', JSON.stringify(tasks));
+    setTimeout(() => window.dispatchEvent(new MessageEvent('message', { data: { type: 'mcp-response', hostId: 'local', message: { id, result, error } } })), 30);
+  } };
+  /** 重现宿主已有的底部高度观察，不在卡片内另造布局补丁。 */
+  const footer = document.querySelector('.bottom-0');
+  new ResizeObserver(() => document.querySelector('.sidebar-navigation').style.setProperty('--sidebar-footer-height', footer.getBoundingClientRect().height + 'px')).observe(footer);
+  document.getElementById('scenario').onchange = () => { archiveFailed = false; };
+  document.getElementById('quota-scenario').onchange = () => window.dispatchEvent(new MessageEvent('message', { data: { type: 'mcp-notification', hostId: 'local', method: 'account/rateLimits/updated', params: { rateLimits: { limitId: 'codex' } } } }));
+  document.getElementById('switch-account').onclick = () => { alternateAccount = !alternateAccount; window.dispatchEvent(new MessageEvent('message', { data: { type: 'mcp-notification', hostId: 'local', method: 'account/updated', params: {} } })); };
+</script><script src="card.js"></script>
+<style>
+@media(prefers-color-scheme:dark){codex-iq-card{--text-default:#e5e5e2;--text-secondary:#a7a7a0;--surface-primary:#252525;--surface-secondary:#363834;--border-default:#42423f}}
+.reset-demo{margin:28px 0 24px;padding-bottom:24px;border-bottom:1px solid #e7e7e2}.demo-caption{font-size:12px;color:#797c75;margin-bottom:10px}.reset-states{display:flex;gap:6px;flex-wrap:wrap}.reset-states button{padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;transition:background .12s,color .12s}.reset-states button[aria-pressed=true]{background:#30312e;border-color:#30312e;color:#fff}.reset-states button:hover:not([aria-pressed=true]){background:#f4f4f1}.reset-states button:focus-visible,.demo-tools summary:focus-visible{outline:2px solid #7b8b9e;outline-offset:3px}.reset-demo p{font-size:12px;line-height:1.8;margin:12px 0 0;min-height:44px}.demo-tools summary{font-size:12px;color:#63665d;cursor:pointer}.demo-tools .controls{margin:16px 0}.design-note{font-size:12px;line-height:1.8;color:#81847c;margin-top:18px}.content h1{font-size:24px}.content>p{font-size:13px}
+@media(max-width:700px){main{display:block;height:auto;min-height:100vh;overflow:visible}.sidebar-navigation{height:650px}aside{max-width:320px;margin:0 auto;border-right:0;border-bottom:1px solid #e5e5e0}.content{padding:28px 24px}.content h1{font-size:22px}}
+@media(prefers-color-scheme:dark){.reset-demo{border-color:#42423f}.reset-states button[aria-pressed=true]{background:#e5e5e2;color:#252525;border-color:#e5e5e2}.reset-states button:hover:not([aria-pressed=true]){background:#363636}.demo-tools summary,.design-note{color:#a2a59e}}
+@media(prefers-reduced-motion:reduce){.reset-states button{transition:none}}
+</style>
+
+<script>
+(function () {
+  const { resetSnapshot } = window.CodexIQReset;
+  const notes = {
+    none: '默认展示「暂无新预告」。展开后可查看最近一次确认记录和数据核验时间。',
+    announced: '预告时间为展示样例，不代表已发布消息。有预告时直接露出预计时间。',
+    confirmed: '此处模拟当天确认记录；确认帖时间不等于账号实际到账时间。',
+    error: '读取失败时在展开内容中提供重试。账号额度与检测按钮仍可独立使用。'
+  };
+  let scenario = 'none';
+  /** 通过正式加载器使用的同一入口推送样例，预告日期随当前时间平移，避免样例自动过期。 */
+  function renderResetPreview(key) {
+    scenario = key;
+    const now = Date.now(), iso = value => new Date(value).toISOString();
+    const confirmedAt = key === 'confirmed' ? now : now - 3 * 86400000;
+    const events = [{ type: 'direct_reset', status: 'confirmed', createdAt: iso(confirmedAt - 3600000), updatedAt: iso(confirmedAt), confirmedAt: iso(confirmedAt), occurredOn: null, schedule: null, posts: [] }];
+    if (key === 'announced') events.push({ type: 'direct_reset', status: 'announced', createdAt: iso(now), updatedAt: iso(now), confirmedAt: null, occurredOn: null, schedule: { precision: 'window', from: iso(now + 86400000), through: iso(now + 90000000) }, posts: [] });
+    window.__codexIQCard.updateReset({ status: key === 'error' ? 'error' : 'ready', snapshot: resetSnapshot({ schemaVersion: 1, timezone: 'Asia/Shanghai', checkedAt: iso(now), events }) });
+    document.querySelectorAll('[data-reset-state]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.resetState === key)));
+    document.getElementById('reset-demo-note').textContent = notes[key];
+  }
+  document.querySelectorAll('[data-reset-state]').forEach(button => button.addEventListener('click', () => renderResetPreview(button.dataset.resetState)));
+  // 模拟现有加载器的心跳与取走重试请求；不修改正式卡片交互或接触网络。
+  setInterval(() => { const retry = window.__codexIQCard?.takeResetRefresh(); if (window.__codexIQCard) renderResetPreview(retry ? 'none' : scenario); }, 2500);
+  renderResetPreview('none');
+})();
+</script></body></html>

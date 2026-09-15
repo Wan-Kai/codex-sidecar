@@ -1,0 +1,28 @@
+{
+  "name": "codex-sidecar",
+  "version": "1.1.13",
+  "private": true,
+  "description": "Codex 的 macOS 侧栏增强工具：账号额度、Tibo 重置消息与模型知识检测。",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.cjs test/*.test.mjs",
+    "test:launcher": "swift test/launcher-icon.swift",
+    "start": "node background.mjs start",
+    "stop": "node background.mjs stop",
+    "status": "node background.mjs status",
+    "build:launcher": "node build-launcher.mjs",
+    "remove": "node load.mjs --remove",
+    "build:check": "node build-launcher.mjs --no-shortcut"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wan-Kai/codex-sidecar.git"
+  },
+  "homepage": "https://github.com/Wan-Kai/codex-sidecar#readme",
+  "bugs": {
+    "url": "https://github.com/Wan-Kai/codex-sidecar/issues"
+  }
+}
