@@ -1,6 +1,6 @@
 {
   "name": "codex-sidecar",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "private": true,
   "description": "Codex 的 macOS 侧栏增强工具：账号额度、Tibo 重置消息与模型知识检测。",
   "engines": {

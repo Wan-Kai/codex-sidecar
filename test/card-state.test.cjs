@@ -52,3 +52,41 @@ async function reproduce() {
 }
 
 test('切账号后点击正式收尾按钮，不把原账号的答案显示为当前结果', reproduce);
+
+/** 用真实卡片入口和可控时钟重现后台静默，再验证新快照与接口失败各自恢复正确文案。 */
+test('后台超过 45 秒未同步显示进行中，重新同步后恢复消息或真实读取错误', async () => {
+  let clock = Date.now();
+  const initial = clock, nodes = [], intervals = new Map();
+  const document = { hidden: false, documentElement: new Element(), createElement() { const value = new Element(); nodes.push(value); return value; },
+    querySelectorAll() { return []; }, addEventListener() {}, removeEventListener() {} };
+  const window = { localStorage: { getItem: () => null }, CodexIQCore: { ...core, createBridge: () => ({
+    subscribe: () => () => {}, dispose() {}, async request(method) {
+      if (method === 'model/list') return { data: [{ model: 'gpt-6-astra', supportedReasoningEfforts: [{ reasoningEffort: 'medium' }] }] };
+      if (method === 'account/rateLimits/read') return {};
+      throw new Error(`不允许未模拟的 RPC：${method}`);
+    }
+  }) }, CodexIQReset: reset };
+  vm.runInNewContext(readFileSync(join(__dirname, '../card.js'), 'utf8'), {
+    window, document, navigator: { locks: {} },
+    Option: class { constructor(text, value) { this.text = text; this.value = value; } },
+    MutationObserver: class { observe() {} disconnect() {} }, requestAnimationFrame: fn => fn(),
+    setTimeout: () => 1, clearTimeout() {}, setInterval(fn, ms) { intervals.set(ms, fn); return ms; }, clearInterval() {},
+    Date: class extends Date { static now() { return clock; } }, console
+  });
+  await new Promise(setImmediate);
+  const root = nodes[0].shadow;
+  const ready = { status: 'ready', snapshot: { checkedAt: initial, events: [] } };
+  window.__codexIQCard.updateReset(ready);
+  clock += 45000; intervals.get(15000)();
+  assert.equal(root.getElementById('tibo-state').textContent, '暂无新预告');
+  clock++; intervals.get(15000)();
+  assert.equal(root.getElementById('tibo-state').textContent, '进行中');
+  assert.equal(root.getElementById('tibo').dataset.state, 'syncing');
+  assert.equal(root.getElementById('tibo-description').textContent, '正在等待后台同步重置消息。');
+  assert.equal(root.getElementById('tibo-retry').hidden, false);
+  window.__codexIQCard.updateReset(ready);
+  assert.equal(root.getElementById('tibo-state').textContent, '暂无新预告');
+  window.__codexIQCard.updateReset({ ...ready, status: 'error' });
+  assert.equal(root.getElementById('tibo-state').textContent, '暂时无法读取');
+  assert.equal(root.getElementById('tibo').dataset.state, 'error');
+});

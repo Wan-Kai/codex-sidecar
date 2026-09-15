@@ -236,9 +236,10 @@
   /** 展示加载器传入的公开快照；模型与账号状态不拥有公共消息，刷新互不影响。 */
   function renderReset() {
     if (disposed) return;
-    // 加载器断开后不能无限沿用旧状态；数据源核验是否过期另由 resetView 判断。
+    // 超过同步宽限期只表示等待后台消息，不能当作接口读取失败或重置正在执行。
+    // 收到下一次快照后自动恢复数据源状态；核验时间是否过期仍由 resetView 判断。
     const disconnected = resetReceivedAt && Date.now() - resetReceivedAt > 45000;
-    const view = resetView(disconnected ? { ...resetState, status: 'error' } : resetState);
+    const view = resetView(disconnected ? { ...resetState, status: 'syncing' } : resetState);
     $('tibo').dataset.state = view.status;
     $('tibo-state').textContent = view.label;
     $('tibo-time').textContent = view.time; $('tibo-time').hidden = !view.time;
@@ -302,7 +303,7 @@
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
   window.__codexIQCard = {
-    version: '1.1.13',
+    version: '1.1.14',
     /** 既有加载器推送公共消息，不在页面请求第三方站点或接触账号凭据。 */
     updateReset(state) { if (!disposed) { resetState = state; resetReceivedAt = Date.now(); renderReset(); } },
     /** 加载器逐轮取走一次重试意图，多窗口请求在后台合并。 */

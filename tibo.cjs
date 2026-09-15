@@ -60,6 +60,8 @@
     const snapshot = state?.snapshot;
     const checkedAt = snapshot?.checkedAt;
     const base = { status: 'none', label: '暂无新预告', time: '', description: '尚未公布下一次重置时间。', checked: checkedAt ? `核验至 ${formatTime(checkedAt)} · 北京时间` : '核验时间暂不可用', source: null, retry: false };
+    // 这是页面等待加载器同步的状态；隐藏旧预告，详情说明“进行中”指消息同步。
+    if (state?.status === 'syncing') return { ...base, status: 'syncing', label: '进行中', description: '正在等待后台同步重置消息。', retry: true };
     if (state?.status === 'error') return { ...base, status: 'error', label: '暂时无法读取', description: '暂时无法获取重置消息，请稍后重试。', retry: true };
     if (!snapshot) return { ...base, status: 'loading', label: '读取中…', description: '正在读取公开重置消息。' };
     if (!checkedAt || now - checkedAt > STALE_MS || checkedAt - now > POLL_MS) return { ...base, status: 'stale', label: '消息待更新', description: '数据核验暂未更新，无法确认是否有新预告。', retry: true };

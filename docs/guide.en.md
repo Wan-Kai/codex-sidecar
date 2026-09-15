@@ -60,6 +60,8 @@ Reopen the launcher. At the same repository path, the current loader is reused i
 | Creation times out before a task ID is returned | Inspect the Codex task list before clearing the card's pending record. |
 | Usage or reset news cannot be read | Expand the relevant area and retry. Reaching a scheduled time does not prove a reset occurred. |
 
+When no loader update arrives for more than 45 seconds, the Tibo row shows “进行中” (In progress); its detail says it is waiting for the loader to sync reset news. A new update restores the corresponding state. Actual feed failures still show “暂时无法读取” (Temporarily unavailable).
+
 After an account switch, an old task may still be cleaned up, but its response is not presented as the current account's result when ownership cannot be confirmed.
 
 ## Disable and uninstall
