@@ -58,7 +58,7 @@ Reopen the launcher. At the same repository path, the current loader is reused i
 | A request times out | Use “检查并收尾” to inspect and finish the original task. It does not resend the prompt. |
 | Archiving fails | Use “重试归档” to retry archiving the saved result. |
 | Creation times out before a task ID is returned | Inspect the Codex task list before clearing the card's pending record. |
-| Usage or reset news cannot be read | Expand the relevant area and retry. Reaching a scheduled time does not prove a reset occurred. |
+| Usage or reset news cannot be read | Wait for automatic refresh or use the top-right refresh button in the usage area to update both. Tibo has no separate retry button. Reaching a scheduled time does not prove a reset occurred. |
 
 When no loader update arrives for more than 45 seconds, the Tibo row shows “进行中” (In progress); its detail says it is waiting for the loader to sync reset news. A new update restores the corresponding state. Actual feed failures still show “暂时无法读取” (Temporarily unavailable).
 
@@ -81,7 +81,7 @@ To uninstall, disable Sidecar first, then delete the desktop alias and repositor
 - CDP binds to loopback. The loader accepts local WebSockets on the configured port and filters known Codex pages. CDP can control the page; do not forward or expose `9222` publicly. Other local processes may still access it.
 - Sidecar does not read credential files, modify the Codex package, ASAR, signature, or CSP, or register a login item.
 - Usage data comes through the host bridge and stays in page memory. Switching accounts clears it. Pending task IDs, options, and received responses are temporarily stored in page local storage to support cleanup.
-- The loader requests the [AIHOT public reset feed](https://aihot.news/api/v1/codex-resets) every five minutes without account data, allowance details, or tokens. AIHOT receives an ordinary web request and its source IP. Public reset notices do not guarantee when an individual account receives a reset.
+- The loader requests the [AIHOT public reset feed](https://aihot.news/api/v1/codex-resets) alongside each usage query (every minute while visible, or on manual refresh), without account data, allowance details, or tokens. Concurrent and rapid requests are deduplicated, and server rate limits are respected. AIHOT receives an ordinary web request and its source IP. Public reset notices do not guarantee when an individual account receives a reset.
 - Announcements, confirmations, and stale data are distinct states. No confidence percentage is shown when the source provides none. The card does not redeem reset credits or trigger account resets.
 - There is no additional login service or telemetry. Local logs rotate on the next launch after exceeding 512 KB.
 

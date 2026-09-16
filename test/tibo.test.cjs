@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { resetSnapshot, resetView, ResetFeed, RESET_URL, POLL_MS } = require('../tibo.cjs');
+const { resetSnapshot, resetView, ResetFeed, RESET_URL } = require('../tibo.cjs');
 const now = Date.parse('2026-09-15T11:00:00+08:00');
 const iso = value => new Date(value).toISOString();
 const event = changes => ({ type: 'direct_reset', status: 'announced', createdAt: iso(now - 3600000), updatedAt: iso(now - 3600000), confirmedAt: null, occurredOn: null, schedule: null, scope: '', posts: [], ...changes });
@@ -59,14 +59,14 @@ test('协议损坏显式失败；原帖仅接受 Tibo HTTPS 帖子，不传输�
   assert.equal(JSON.stringify(snapshot).includes('private'), false);
 });
 
-test('固定匿名端点、五分钟轮询与并发合并，ETag 304 不伪造核验时间', async () => {
+test('固定匿名端点、随每分钟额度刷新查询与并发合并，ETag 304 不伪造核验时间', async () => {
   let clock = now, resolve; const calls = [];
   const feed = new ResetFeed({ now: () => clock, fetcher(url, options) { calls.push({ url, options }); return new Promise(r => { resolve = r; }); } });
   const a = feed.refresh(), b = feed.refresh(); assert.equal(a, b); assert.equal(calls.length, 1);
   assert.equal(calls[0].url, RESET_URL); assert.equal(calls[0].options.credentials, 'omit'); assert.equal(calls[0].options.redirect, 'error');
   resolve(response([], { ETag: 'version-1' })); await a;
   await feed.refresh(); assert.equal(calls.length, 1);
-  clock += POLL_MS;
+  clock += 60000;
   const next = feed.refresh(); assert.equal(calls[1].options.headers['If-None-Match'], 'version-1');
   resolve(new Response(null, { status: 304 })); await next;
   assert.equal(feed.state.status, 'ready'); assert.equal(feed.state.snapshot.checkedAt, now);
@@ -76,20 +76,23 @@ test('完整快照替换撤回的预告，损坏响应不能更新 ETag，失败
   let clock = now, mode = 'valid'; const headers = [];
   const feed = new ResetFeed({ now: () => clock, fetcher: async (_, options) => { headers.push(options.headers); return mode === 'invalid' ? new Response('{}', { headers: { ETag: 'bad' } }) : response(mode === 'valid' ? [event({ schedule: schedule(now + 3600000) })] : [], { ETag: mode }); } });
   await feed.refresh(); assert.equal(feed.state.snapshot.events.length, 1);
-  clock += POLL_MS; mode = 'invalid'; await feed.refresh();
+  clock += 60000; mode = 'invalid'; await feed.refresh();
   assert.equal(feed.state.status, 'error'); assert.equal(feed.etag, 'valid');
-  clock += 5000; mode = 'empty'; await feed.refresh({ manual: true });
+  clock += 5000; mode = 'empty'; await feed.refresh();
   assert.equal(headers.at(-1)['If-None-Match'], 'valid'); assert.equal(feed.state.snapshot.events.length, 0);
 });
 
-test('429 的 Retry-After 约束手动重试；超时/离线保持失败且自动退避', async () => {
+test('429 的 Retry-After 约束统一刷新；超时/离线保留失败且有短时冷却', async () => {
   let clock = now, calls = 0, fail = true;
   const feed = new ResetFeed({ now: () => clock, fetcher: async () => { calls++; return fail ? new Response(null, { status: 429, headers: { 'Retry-After': '120' } }) : response([]); } });
-  await feed.refresh(); await feed.refresh({ manual: true }); assert.equal(calls, 1);
-  clock += 119000; await feed.refresh({ manual: true }); assert.equal(calls, 1);
-  clock += 1000; fail = false; await feed.refresh({ manual: true }); assert.equal(calls, 2); assert.equal(feed.state.status, 'ready');
-  const offline = new ResetFeed({ now: () => clock, fetcher: async () => { throw new Error('timeout'); } });
-  await offline.refresh(); assert.equal(offline.state.status, 'error'); assert.ok(offline.nextPoll > clock);
+  await feed.refresh(); await feed.refresh(); assert.equal(calls, 1);
+  clock += 119000; await feed.refresh(); assert.equal(calls, 1);
+  clock += 1000; fail = false; await feed.refresh(); assert.equal(calls, 2); assert.equal(feed.state.status, 'ready');
+  let offlineCalls = 0;
+  const offline = new ResetFeed({ now: () => clock, fetcher: async () => { offlineCalls++; throw new Error('timeout'); } });
+  await offline.refresh(); assert.equal(offline.state.status, 'error');
+  clock += 4999; await offline.refresh(); assert.equal(offlineCalls, 1);
+  clock += 1; await offline.refresh(); assert.equal(offlineCalls, 2);
 });
 
 test('超大响应与没有缓存的 304 均不显示为成功', async () => {

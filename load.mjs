@@ -49,8 +49,15 @@ export class CDP {
 }
 
 /**
- * 单次连接先确认原生桥，再加载本地代码并传入已解析的公共快照，最后取走一次重试意图。
+ * 单次连接先确认原生桥，再加载本地代码并传入公共快照，最后取走额度查询的刷新意图。
  * 外部内容仅作为 JSON 数据传输；忙碌旧卡片仍按原规则延后升级，不中断模型任务。
+ * @param {object} target 已筛选的 Codex 页面及本机 WebSocket 地址。
+ * @param {number} port 已验证的本机调试端口。
+ * @param {string} source 随加载器读取的本地卡片源码。
+ * @param {boolean} remove 是否仅移除卡片。
+ * @param {string} version 期望的卡片版本，用于空闲时升级。
+ * @param {object|null} resetState 公共消息状态；首次查询前可为空。
+ * @returns {Promise<string>} 移除说明或包含刷新意图的 JSON；连接及执行错误向上抛出。
  */
 export async function apply(target, port, source, remove, version, resetState = null) {
   const ws = new WebSocket(localSocket(target.webSocketDebuggerUrl, port));
@@ -78,8 +85,10 @@ export function managedExpired(startedAt, lastSeenAt, now = Date.now()) {
 }
 
 /**
- * 常驻加载器等待已有调试端口并维护一份公共重置快照，逐窗口同步展示及重试意图。
+ * 常驻加载器等待已有调试端口并维护一份公共重置快照，逐窗口同步展示及刷新意图。
  * 没有 Codex 目标时不发起网络读取；不强行退出用户应用，也不修改安装包。
+ * @param {string[]} args 启动参数，支持端口、移除和随宿主退出的后台模式。
+ * @returns {Promise<void>} 停止或移除完成后结束；普通连接失败等待下轮，移除失败抛出。
  */
 export async function main(args = process.argv.slice(2)) {
   const remove = args.includes('--remove');
@@ -103,16 +112,15 @@ export async function main(args = process.argv.slice(2)) {
       const targets = (await response.json()).filter(isCodexPage);
       if (!targets.length) throw new Error('未找到符合当前版本结构的 Codex 主页面');
       lastSeenAt = Date.now();
-      // 主页面 CSP 不允许第三方连接；由已有 Node 进程匿名读取固定端点。
-      // refresh 内部合并请求并限制为五分钟，慢请求不阻塞卡片挂载与模型任务。
-      if (!remove) void resets.refresh();
       const values = [], failures = [];
       // 旧版卡片正在请求时不卸载；它完成收尾后，下一轮再替换为新版。
       for (const [index, target] of targets.entries()) {
         try {
           const value = await apply(target, port, source, remove, version, resets.state);
           values.push(value);
-          if (!remove && value.startsWith('{') && JSON.parse(value).resetRefresh) void resets.refresh({ manual: true });
+          // 仅响应额度刷新，不再单独轮询。CSP 限制下由已有 Node 进程匿名查询，
+          // 请求去重和 Retry-After 由 ResetFeed 负责；慢请求不能阻塞其他窗口与额度。
+          if (!remove && value.startsWith('{') && JSON.parse(value).resetRefresh) void resets.refresh();
         } catch (error) {
           // 单个残留窗口失败不能跳过其他窗口；下一轮仍会重试该目标，无需新增并发队列。
           failures.push(error);

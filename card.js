@@ -72,12 +72,12 @@
     .tibo-toggle>.tibo-icon{width:13px;height:13px;opacity:.8}.tibo-label{white-space:nowrap}.tibo-state{margin-left:auto;white-space:nowrap;color:var(--text-secondary,#777770);font-weight:450}.tibo-toggle .tibo-chevron{width:10px;height:10px;opacity:.6}.tibo-toggle[aria-expanded=true] .tibo-chevron{transform:rotate(90deg)}
     .tibo[data-state=announced] .tibo-state{color:#496e8a}.tibo[data-state=confirmed] .tibo-state{color:#27815e}.tibo[data-state=error] .tibo-state{color:#a77335}
     .tibo-time{font-size:11px;font-weight:550;margin:0 0 2px 19px;color:var(--text-default,#292929);font-variant-numeric:tabular-nums}
-    .tibo-detail{padding:6px 0 1px 19px;font-size:10px;line-height:1.7;color:var(--text-secondary,#777770)}.tibo-detail p{margin:0 0 5px;overflow-wrap:anywhere}.tibo-checked{opacity:.85}.tibo-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px}.tibo-source{display:inline-flex;gap:4px;align-items:center;color:inherit;text-decoration:none;border-radius:3px}.tibo-source:hover{text-decoration:underline}.tibo-source:focus-visible{outline:2px solid #7b8b9e;outline-offset:3px}.tibo-source svg{width:10px;height:10px}.tibo-retry{font-size:10px;padding:3px 6px;text-decoration:underline}
+    .tibo-detail{padding:6px 0 1px 19px;font-size:10px;line-height:1.7;color:var(--text-secondary,#777770)}.tibo-detail p{margin:0 0 5px;overflow-wrap:anywhere}.tibo-checked{opacity:.85}.tibo-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:24px}.tibo-source{display:inline-flex;gap:4px;align-items:center;color:inherit;text-decoration:none;border-radius:3px}.tibo-source:hover{text-decoration:underline}.tibo-source:focus-visible{outline:2px solid #7b8b9e;outline-offset:3px}.tibo-source svg{width:10px;height:10px}
     @media(prefers-color-scheme:dark){.tibo-time{color:var(--text-default,#e5e5e2)}.tibo[data-state=announced] .tibo-state{color:#92b6d0}.tibo[data-state=confirmed] .tibo-state{color:#82bda3}.tibo[data-state=error] .tibo-state{color:#cfa773}}
 
   </style>
   <section class="card" aria-label="智商检测卡片" aria-busy="false">
-    <section id="quota" class="quota" aria-label="账号额度" aria-busy="true"><button id="quota-refresh" aria-label="刷新额度" title="刷新额度"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 8a6 6 0 1 1 0 5M4 4v4h4"/></svg></button><div id="quota-rows"></div><section id="tibo" class="tibo" aria-label="Tibo 重置消息"><button id="tibo-toggle" class="tibo-toggle" aria-expanded="false" aria-controls="tibo-detail"><svg class="tibo-icon" aria-hidden="true" viewBox="0 0 16 16"><rect x="2.5" y="3.5" width="11" height="10" rx="2"/><path d="M5 2v3m6-3v3M2.5 7h11M5.5 10h2"/></svg><span class="tibo-label">Tibo 重置</span><span id="tibo-state" class="tibo-state" role="status"></span><svg class="tibo-chevron" aria-hidden="true" viewBox="0 0 16 16"><path d="m6 4 4 4-4 4"/></svg></button><p id="tibo-time" class="tibo-time" hidden></p><div id="tibo-detail" class="tibo-detail" hidden><p id="tibo-description" class="tibo-description"></p><p id="tibo-checked" class="tibo-checked"></p><div class="tibo-footer"><a class="tibo-source" href="https://aihot.news/codex-reset" target="_blank" rel="noopener noreferrer">来源：AIHOT<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3l-7 7"/></svg></a><a id="tibo-original" class="tibo-source" target="_blank" rel="noopener noreferrer" hidden>原帖 ↗</a><button id="tibo-retry" class="tibo-retry" hidden>重试</button></div></div></section></section>
+    <section id="quota" class="quota" aria-label="账号额度" aria-busy="true"><button id="quota-refresh" aria-label="刷新额度与 Tibo 重置" title="刷新额度与 Tibo 重置"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 8a6 6 0 1 1 0 5M4 4v4h4"/></svg></button><div id="quota-rows"></div><section id="tibo" class="tibo" aria-label="Tibo 重置消息"><button id="tibo-toggle" class="tibo-toggle" aria-expanded="false" aria-controls="tibo-detail"><svg class="tibo-icon" aria-hidden="true" viewBox="0 0 16 16"><rect x="2.5" y="3.5" width="11" height="10" rx="2"/><path d="M5 2v3m6-3v3M2.5 7h11M5.5 10h2"/></svg><span class="tibo-label">Tibo 重置</span><span id="tibo-state" class="tibo-state" role="status"></span><svg class="tibo-chevron" aria-hidden="true" viewBox="0 0 16 16"><path d="m6 4 4 4-4 4"/></svg></button><p id="tibo-time" class="tibo-time" hidden></p><div id="tibo-detail" class="tibo-detail" hidden><p id="tibo-description" class="tibo-description"></p><p id="tibo-checked" class="tibo-checked"></p><div class="tibo-footer"><a class="tibo-source" href="https://aihot.news/codex-reset" target="_blank" rel="noopener noreferrer">来源：AIHOT<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3l-7 7"/></svg></a><a id="tibo-original" class="tibo-source" target="_blank" rel="noopener noreferrer" hidden>原帖 ↗</a></div></div></section></section>
     <header><span class="brand-mark"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><strong>智商检测</strong><span id="status" class="status" role="status">连接中</span><button id="toggle" title="模型设置" aria-label="展开模型设置" aria-expanded="false" aria-controls="settings"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="m6 8 4 4 4-4"/></svg></button></header>
     <button id="config" class="config" aria-label="修改模型和推理强度"><span id="config-model">读取可用模型…</span><span id="config-effort"></span></button>
     <div id="settings" hidden><label>模型<select id="model" aria-label="模型"></select></label><label>推理强度<select id="effort" aria-label="推理强度"></select></label></div>
@@ -135,13 +135,16 @@
     $('task').textContent = record?.threadId ? `任务 ID：${record.threadId}` : '';
   }
 
-  /** 额度独立渲染；每个时间窗口一行，模型设置折叠和检测状态不会隐藏额度。 */
+  /**
+   * 按额度自身结果渲染窗口和共用刷新入口；Tibo 失败不能阻塞额度操作。
+   * 无入参；只更新 DOM，无返回值，时间戳明确属于额度查询。
+   */
   function renderQuota() {
     if (disposed) return;
     const { status, windows, updatedAt } = usage.state;
     $('quota-refresh').disabled = status === 'loading';
     $('quota').setAttribute('aria-busy', String(status === 'loading'));
-    $('quota-refresh').title = updatedAt ? `刷新额度 · 上次更新 ${new Date(updatedAt).toLocaleTimeString('zh-CN')}` : '刷新额度';
+    $('quota-refresh').title = updatedAt ? `刷新额度与 Tibo 重置 · 额度上次更新 ${new Date(updatedAt).toLocaleTimeString('zh-CN')}` : '刷新额度与 Tibo 重置';
     if (!windows.length) {
       const row = document.createElement('div');
       row.className = 'quota-row';
@@ -177,15 +180,31 @@
     }));
   }
 
-  /** 高频稀疏通知合并为一次完整读取；后台窗口等回到前台后再读，减少无效请求。 */
-  function queueUsageRefresh() {
-    if (disposed || document.hidden || quotaTimer) return;
-    quotaTimer = setTimeout(() => { quotaTimer = null; if (!disposed) usage.refresh(); }, 1000);
+  /**
+   * 所有额度读取都由此联动公共消息，先登记意图，再独立读取额度，不等待外部站点。
+   * 无入参；返回额度读取 Promise。进行中的额度请求复用，不重复登记 Tibo 请求。
+   */
+  function refreshUsageAndReset() {
+    if (disposed) return Promise.resolve();
+    if (!usage.request) resetRefreshRequested = true;
+    return usage.refresh();
   }
 
-  /** 回到可见窗口时刷新账号快照，防止后台暂停计时后继续展示旧倒计时。 */
+  /**
+   * 高频额度通知合并为一次联合刷新；执行时仍需可见，避免切到后台后留下无效请求。
+   * 无入参和返回值；只登记一秒定时器，读取结果由各自状态入口更新。
+   */
+  function queueUsageRefresh() {
+    if (disposed || document.hidden || quotaTimer) return;
+    quotaTimer = setTimeout(() => { quotaTimer = null; refreshVisibleUsage(); }, 1000);
+  }
+
+  /**
+   * 定时、通知或回到前台时同时更新额度和重置消息；后台页面不发起周期查询。
+   * 无入参和返回值；两项请求独立完成，避免一项失败影响另一项。
+   */
   function refreshVisibleUsage() {
-    if (!document.hidden && !disposed) usage.refresh();
+    if (!document.hidden && !disposed) refreshUsageAndReset();
   }
 
   /** 模型和档位来自当前应用的实时目录，不补造不可用选项。 */
@@ -233,7 +252,10 @@
     finally { render(); queueUsageRefresh(); }
   }
 
-  /** 展示加载器传入的公开快照；模型与账号状态不拥有公共消息，刷新互不影响。 */
+  /**
+   * 展示加载器传入的公开快照；查询随额度触发，但结果与错误独立呈现。
+   * 无入参和返回值；同步中隐藏旧预告，避免把等待同步误报成接口错误。
+   */
   function renderReset() {
     if (disposed) return;
     // 超过同步宽限期只表示等待后台消息，不能当作接口读取失败或重置正在执行。
@@ -245,9 +267,6 @@
     $('tibo-time').textContent = view.time; $('tibo-time').hidden = !view.time;
     $('tibo-description').textContent = view.description;
     $('tibo-checked').textContent = view.checked;
-    $('tibo-retry').hidden = !view.retry;
-    $('tibo-retry').disabled = resetRefreshRequested;
-    $('tibo-retry').textContent = resetRefreshRequested ? '读取中…' : '重试';
     $('tibo-original').hidden = !view.source;
     if (view.source) $('tibo-original').href = view.source; else $('tibo-original').removeAttribute('href');
   }
@@ -273,9 +292,8 @@
     }
     await perform(runner.job.kind, true);
   };
-  $('quota-refresh').onclick = () => usage.refresh();
+  $('quota-refresh').onclick = refreshUsageAndReset;
   $('tibo-toggle').onclick = toggleResetDetails;
-  $('tibo-retry').onclick = () => { resetRefreshRequested = true; renderReset(); };
   const resetInterval = setInterval(renderReset, 15000);
   const quotaInterval = setInterval(refreshVisibleUsage, 60000);
   document.addEventListener('visibilitychange', refreshVisibleUsage);
@@ -283,7 +301,7 @@
     if (method === 'account/updated' || method === 'account/login/completed') {
       accountEpoch++; last = recovery = null;
       clearTimeout(quotaTimer); quotaTimer = null; quotaExpanded.clear();
-      usage.clear(); usage.refresh(); connect();
+      usage.clear(); refreshUsageAndReset(); connect();
     } else if (method === 'account/rateLimits/updated') queueUsageRefresh();
   });
 
@@ -303,10 +321,13 @@
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
   window.__codexIQCard = {
-    version: '1.1.14',
+    version: '1.1.15',
     /** 既有加载器推送公共消息，不在页面请求第三方站点或接触账号凭据。 */
     updateReset(state) { if (!disposed) { resetState = state; resetReceivedAt = Date.now(); renderReset(); } },
-    /** 加载器逐轮取走一次重试意图，多窗口请求在后台合并。 */
+    /**
+     * 加载器逐轮消费额度查询登记的公共消息刷新意图，多窗口请求在后台合并。
+     * 无入参；返回是否需要刷新并清空标记，避免同一次额度查询重复触发。
+     */
     takeResetRefresh() { const requested = resetRefreshRequested; resetRefreshRequested = false; return requested; },
     get mounted() { return host.isConnected; },
     get pending() { return !!runner.job; },
@@ -319,5 +340,5 @@
       delete window.__codexIQCard;
     }
   };
-  mount(); connect(); usage.refresh(); render(); renderReset();
+  mount(); connect(); refreshUsageAndReset(); render(); renderReset();
 })();
